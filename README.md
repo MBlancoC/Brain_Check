@@ -25,7 +25,7 @@ Utilizamos Streamlit para crear una interfaz web interactiva que permite a los u
 [Aquí incluir instrucciones detalladas sobre cómo instalar, configurar y usar el proyecto, incluyendo cualquier paso necesario para configurar el entorno, como instalar dependencias, etc.]
 
 ## Contribuyentes
-Este proyecto ha sido desarrollado por un equipo de talentosos científicos de datos:
+Este proyecto ha sido desarrollado por:
 - [Manuel Blanco](https://github.com/MBlancoC)
 - [Marsi Figueroa](https://github.com/Marsi3116)
 - [Benjamin Happey](https://github.com/BenjaminHappey)
