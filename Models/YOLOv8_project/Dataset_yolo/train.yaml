@@ -1,0 +1,8 @@
+train:
+  - /content/drive/My Drive/YOLOv8_project/Dataset_yolo/TRAIN_CROP/YES
+  - /content/drive/My Drive/YOLOv8_project/Dataset_yolo/TRAIN_CROP/NO
+val:
+  - /content/drive/My Drive/YOLOv8_project/Dataset_yolo/TEST_CROP/YES
+  - /content/drive/My Drive/YOLOv8_project/Dataset_yolo/TEST_CROP/NO
+nc: 2  # number of classes
+names: ['YES', 'NO']  # class names
