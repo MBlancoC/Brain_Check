@@ -20,7 +20,7 @@ El dataset utilizado para este proyecto fue obtenido de [Github](https://github.
 
 ## Interfaz de Usuario
 Utilizamos Streamlit para crear una interfaz web interactiva que permite a los usuarios cargar imágenes para su clasificación. En casos de detección de tumor, se ofrece la opción de interactuar con Chat GPT para obtener más información.
-
+Actualmente utilizando app_marsi.py
 ## Cómo Usar
 [Aquí incluir instrucciones detalladas sobre cómo instalar, configurar y usar el proyecto, incluyendo cualquier paso necesario para configurar el entorno, como instalar dependencias, etc.]
 
