@@ -3,7 +3,8 @@ import io
 import streamlit as st
 from PIL import Image
 import base64
-from predict_api import predict_image_classification_sample
+from Backend import predict_api
+from Backend.predict_api import predict_image_classification_sample
 import streamlit as st
 from tensorflow.keras.models import load_model
 from tensorflow.keras.preprocessing.image import img_to_array
@@ -11,7 +12,7 @@ from PIL import Image
 import numpy as np
 import openai
 
-openai.api_key = "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"
+openai.api_key = "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"
 
 def preprocess_image(image, target_size):
     if image.mode != "RGB":
@@ -31,8 +32,8 @@ model_choice = st.selectbox('Elige el modelo:', ('OpenCV', 'Vertex'))
 # Subida de archivo para ambas APIs
 uploaded_file = st.file_uploader("Carga tu imagen aquí", type=["jpg", "png"])
 
-
-model1 = load_model('C:/Users/marsi/PycharmProjects/chatgpt_api/mi_modelo_OpenCV.h5') #path 
+# Path_CV = "Modelos/OpenCV/modelcv.h5"
+model1 = load_model('C:/Users/marsi/PycharmProjects/chatgpt_api/mi_modelo_OpenCV.h5') #path
 
 if uploaded_file is not None:
     # Mostrar la imagen cargada
@@ -54,7 +55,7 @@ if uploaded_file is not None:
             file.write(uploaded_file.getbuffer())
 
         # Llamar a la función de predicción de Vertex AI y capturar la respuesta
-        prediction_response = predict_image_classification_sample(
+        prediction_response = predict_api.predict_image_classification_sample(
             project="263184688391",
             endpoint_id="2305326238748639232",
             location="us-central1",
