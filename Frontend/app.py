@@ -61,7 +61,6 @@ if uploaded_file is not None:
             location="us-central1",
             filename="temp_image.jpg"
         )
-
         # Mostrar los resultados de Vertex AI en la aplicación
         if prediction_response:
             for prediction in prediction_response:
