@@ -5,6 +5,7 @@ import os
 # PATHS
 Path_CV = "Models/OpenCV/mi_modelo_OpenCV.h5"
 
+Path_X = ""
 
 # KEYs
 load_dotenv()
