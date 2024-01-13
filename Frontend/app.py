@@ -10,6 +10,7 @@ from PIL import Image
 import numpy as np
 import Backend.parametros as p
 from Backend.vision_api import analyze_image_with_gpt4
+from Backend.funcion_yolo import modelo_yolo
 
 def preprocess_image(image, target_size):
     if image.mode != "RGB":
@@ -23,7 +24,7 @@ def preprocess_image(image, target_size):
 
 st.title("Brain Check")
 
-model_choice = st.selectbox('Elige el modelo:', ('OpenCV', 'Vertex', 'GPT-4'))
+model_choice = st.selectbox('Elige el modelo:', ('OpenCV', 'Vertex', 'GPT-4', 'YoloV8'))
 
 if model_choice in ['OpenCV', 'Vertex']:
     # Subida de archivo para ambas APIs
@@ -45,6 +46,16 @@ if model_choice in ['OpenCV', 'Vertex']:
                 st.write("The MRI image is classified as: No Tumor")
             else:
                 st.write("The MRI image is classified as: Yes Tumor")
+    if model_choice == 'OpenCV':
+        # llamar a la funcion de predicción de OpenCV
+        processed_image = preprocess_image(image, target_size=(32, 32))
+        model1 = load_model(p.Path_CV) #path
+        prediction = model1.predict(processed_image)
+        prediction = np.argmax(prediction, axis=1)
+        if prediction == 0:
+            st.write("The MRI image is classified as: No Tumor")
+        else:
+            st.write("The MRI image is classified as: Yes Tumor")
 
         if model_choice == 'Vertex':
             # llamar a la funcion de predicción de Vertex AI y capturar la respuesta
@@ -54,12 +65,50 @@ if model_choice in ['OpenCV', 'Vertex']:
             with open("temp_image.jpg", "wb") as file:
                 file.write(uploaded_file.getbuffer())
 
-            # Llamar a la función de predicción de Vertex AI y capturar la respuesta
-            prediction_response = predict_image_classification_sample(
-                project="263184688391",
-                endpoint_id="2305326238748639232",
-                location="us-central1",
-                filename="temp_image.jpg"
+        # Llamar a la función de predicción de Vertex AI y capturar la respuesta
+        prediction_response = predict_image_classification_sample(
+            project="263184688391",
+            endpoint_id="2305326238748639232",
+            location="us-central1",
+            filename="temp_image.jpg"
+        )
+        # Mostrar los resultados de Vertex AI en la aplicación
+        if prediction_response:
+            for prediction in prediction_response:
+                if 'displayNames' in prediction and 'confidences' in prediction and 'ids' in prediction:
+                    for displayName, id, confidence in zip(prediction['displayNames'], prediction['ids'], prediction['confidences']):
+                        st.write(f"Resultado de Vertex AI: {displayName}, Confianza: {confidence:.2f}")
+
+    if model_choice == 'YoloV8':
+        modelo_yolo(image)
+
+    # Convertir la imagen a base64 para la API de OpenAI
+    buffered = io.BytesIO()
+    image.save(buffered, format="JPEG")
+    image_data = base64.b64encode(buffered.getvalue()).decode('utf-8')
+
+    # Caja de texto para obtener la pregunta del usuario para GPT-4
+    user_question = st.text_input("Escribe tu pregunta sobre la imagen para GPT-4:")
+
+    # Agregar system, con el rol, contexto, segmentacion del cerebro y ubicacion
+    # del tumor (codigo previo para encontrar ubicacion)
+
+    # Botón de envío
+    if st.button('Enviar pregunta'):
+        try:
+            # Realizar la petición a OpenAI
+            response = openai.chat.completions.create(
+                model="gpt-4-vision-preview",
+                messages=[
+                    {
+                        "role": "user",
+                        "content": [
+                            {"type": "text", "text": user_question},
+                            {"type": "image_url", "image_url": f"data:image/jpeg;base64,{image_data}"}
+                        ],
+                    }
+                ],
+                max_tokens=300,
             )
             # Mostrar los resultados de Vertex AI en la aplicación
             if prediction_response:
