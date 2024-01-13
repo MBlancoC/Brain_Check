@@ -18,3 +18,4 @@ def modelo_yolo(image):
         st.write("El modelo predice que la imagen SÍ contiene un tumor.")
     else:
         st.write("El modelo predice que la imagen NO contiene un tumor.")
+#hola esta es una prueba
