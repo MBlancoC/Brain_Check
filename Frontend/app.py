@@ -1,4 +1,3 @@
-import os
 import io
 import streamlit as st
 from PIL import Image
@@ -9,10 +8,8 @@ from tensorflow.keras.models import load_model
 from tensorflow.keras.preprocessing.image import img_to_array
 from PIL import Image
 import numpy as np
-import openai
 import Backend.parametros as p
-
-openai.api_key = p.OPENAI_KEY
+from Backend.vision_api import analyze_image_with_gpt4
 
 def preprocess_image(image, target_size):
     if image.mode != "RGB":
@@ -81,26 +78,11 @@ if uploaded_file is not None:
     # Caja de texto para obtener la pregunta del usuario para GPT-4
     user_question = st.text_input("Escribe tu pregunta sobre la imagen para GPT-4:")
 
-    # Agregar system, con el rol, contexto, segmentacion del cerebro y ubicacion
-    # del tumor (codigo previo para encontrar ubicacion)
-
     # Botón de envío
     if st.button('Enviar pregunta'):
         try:
-            # Realizar la petición a OpenAI
-            response = openai.chat.completions.create(
-                model="gpt-4-vision-preview",
-                messages=[
-                    {
-                        "role": "user",
-                        "content": [
-                            {"type": "text", "text": user_question},
-                            {"type": "image_url", "image_url": f"data:image/jpeg;base64,{image_data}"}
-                        ],
-                    }
-                ],
-                max_tokens=300,
-            )
+            # Usar la función analyze_image_with_gpt4 para realizar la petición a OpenAI
+            response = analyze_image_with_gpt4(image_data, user_question)
 
             # Mostrar la respuesta
             st.write("Respuesta de GPT-4 Vision:")
