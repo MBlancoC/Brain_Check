@@ -3,7 +3,6 @@ import io
 import streamlit as st
 from PIL import Image
 import base64
-from Backend import predict_api
 from Backend.predict_api import predict_image_classification_sample
 import streamlit as st
 from tensorflow.keras.models import load_model
@@ -11,6 +10,7 @@ from tensorflow.keras.preprocessing.image import img_to_array
 from PIL import Image
 import numpy as np
 import openai
+import Backend.parametros as p
 
 openai.api_key = "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"
 
@@ -32,8 +32,7 @@ model_choice = st.selectbox('Elige el modelo:', ('OpenCV', 'Vertex'))
 # Subida de archivo para ambas APIs
 uploaded_file = st.file_uploader("Carga tu imagen aquí", type=["jpg", "png"])
 
-# Path_CV = "Modelos/OpenCV/modelcv.h5"
-model1 = load_model('C:/Users/marsi/PycharmProjects/chatgpt_api/mi_modelo_OpenCV.h5') #path
+model1 = load_model(p.Path_CV) #path
 
 if uploaded_file is not None:
     # Mostrar la imagen cargada
