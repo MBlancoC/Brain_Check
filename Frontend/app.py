@@ -11,6 +11,7 @@ from PIL import Image
 import numpy as np
 import openai
 import Backend.parametros as p
+from Backend.funcion_yolo import modelo_yolo
 
 openai.api_key = p.OPENAI_KEY
 
@@ -26,12 +27,11 @@ def preprocess_image(image, target_size):
 
 st.title("Brain Check")
 
-model_choice = st.selectbox('Elige el modelo:', ('OpenCV', 'Vertex'))
+model_choice = st.selectbox('Elige el modelo:', ('OpenCV', 'Vertex', 'YoloV8'))
 
 # Subida de archivo para ambas APIs
 uploaded_file = st.file_uploader("Carga tu imagen aquí", type=["jpg", "png"])
 
-model1 = load_model(p.Path_CV) #path
 
 if uploaded_file is not None:
     # Mostrar la imagen cargada
@@ -41,6 +41,7 @@ if uploaded_file is not None:
     if model_choice == 'OpenCV':
         # llamar a la funcion de predicción de OpenCV
         processed_image = preprocess_image(image, target_size=(32, 32))
+        model1 = load_model(p.Path_CV) #path
         prediction = model1.predict(processed_image)
         prediction = np.argmax(prediction, axis=1)
         if prediction == 0:
@@ -69,9 +70,9 @@ if uploaded_file is not None:
                 if 'displayNames' in prediction and 'confidences' in prediction and 'ids' in prediction:
                     for displayName, id, confidence in zip(prediction['displayNames'], prediction['ids'], prediction['confidences']):
                         st.write(f"Resultado de Vertex AI: {displayName}, Confianza: {confidence:.2f}")
+
     if model_choice == 'YoloV8':
-        # Llamar a la función de predicción de YoloV8 y capturar la respuesta
-        pass
+        modelo_yolo(image)
 
     # Convertir la imagen a base64 para la API de OpenAI
     buffered = io.BytesIO()
