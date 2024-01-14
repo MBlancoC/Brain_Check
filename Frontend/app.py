@@ -13,7 +13,6 @@ import openai
 import Backend.parametros as p
 from Backend.funcion_yolo import modelo_yolo
 
-openai.api_key = p.OPENAI_KEY
 
 def preprocess_image(image, target_size):
     if image.mode != "RGB":

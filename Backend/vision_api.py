@@ -9,7 +9,7 @@ def analyze_image_with_gpt4(image_data, question):
                 "role": "user",
                 "content": [
                     {"type": "text", "text": question},
-                    {"type": "image", "data": image_data}
+                    {"type": "image_url", "image_url": f"data:image/jpeg;base64,{image_data}"}
                 ]
             }
         ],
