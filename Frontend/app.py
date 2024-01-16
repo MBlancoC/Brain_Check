@@ -2,7 +2,6 @@ import io
 import streamlit as st
 from PIL import Image
 import base64
-from Backend.predict_api import predict_image_classification_sample
 import streamlit as st
 from tensorflow.keras.models import load_model
 from tensorflow.keras.preprocessing.image import img_to_array
@@ -12,6 +11,8 @@ import openai
 import Backend.parametros as p
 from Backend.vision_api import analyze_image_with_gpt4
 from Backend.funcion_yolo import modelo_yolo
+
+from Backend.Vertex_AI import predict_vertex
 
 def preprocess_image(image, target_size):
     if image.mode != "RGB":
@@ -57,27 +58,16 @@ if model_choice in ['OpenCV', 'Vertex']:
         else:
             st.write("The MRI image is classified as: Yes Tumor")
 
-        if model_choice == 'Vertex':
-            # llamar a la funcion de predicción de Vertex AI y capturar la respuesta
+    if model_choice == 'Vertex':
+        # Utilizar la función predict_vertex para la predicción
+        prediction_response = predict_vertex(uploaded_file)
 
-
-            # Guardar la imagen en un archivo temporal para Vertex AI
-            with open("temp_image.jpg", "wb") as file:
-                file.write(uploaded_file.getbuffer())
-
-            # Llamar a la función de predicción de Vertex AI y capturar la respuesta
-            prediction_response = predict_image_classification_sample(
-                project="263184688391",
-                endpoint_id="2305326238748639232",
-                location="us-central1",
-                filename="temp_image.jpg"
-            )
-            # Mostrar los resultados de Vertex AI en la aplicación
-            if prediction_response:
-                for prediction in prediction_response:
-                    if 'displayNames' in prediction and 'confidences' in prediction and 'ids' in prediction:
-                        for displayName, id, confidence in zip(prediction['displayNames'], prediction['ids'], prediction['confidences']):
-                            st.write(f"Resultado de Vertex AI: {displayName}, Confianza: {confidence:.2f}")
+        # Mostrar los resultados de Vertex AI en la aplicación
+        if prediction_response:
+            for prediction in prediction_response:
+                if 'displayNames' in prediction and 'confidences' in prediction and 'ids' in prediction:
+                    for displayName, id, confidence in zip(prediction['displayNames'], prediction['ids'], prediction['confidences']):
+                        st.write(f"Resultado de Vertex AI: {displayName}, Confianza: {confidence:.2f}")
 
     if model_choice == 'YoloV8':
         modelo_yolo(image)
