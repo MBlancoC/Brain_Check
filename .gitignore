@@ -6,3 +6,11 @@ __pycache__
 .DS_Store
 env/
 venv/
+p1/
+.jpg
+.png
+.JPEG
+
+.zip
+
+.DS_Store
