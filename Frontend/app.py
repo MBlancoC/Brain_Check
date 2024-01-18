@@ -11,8 +11,8 @@ from PIL import Image
 import numpy as np
 import openai
 import Backend.parametros as p
+from Backend.funcion_yolo import modelo_yolo
 
-openai.api_key = "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"
 
 def preprocess_image(image, target_size):
     if image.mode != "RGB":
@@ -24,15 +24,13 @@ def preprocess_image(image, target_size):
     return image
 
 
-
 st.title("Brain Check")
 
-model_choice = st.selectbox('Elige el modelo:', ('OpenCV', 'Vertex'))
+model_choice = st.selectbox('Elige el modelo:', ('OpenCV', 'Vertex', 'YoloV8'))
 
 # Subida de archivo para ambas APIs
 uploaded_file = st.file_uploader("Carga tu imagen aquí", type=["jpg", "png"])
 
-model1 = load_model(p.Path_CV) #path
 
 if uploaded_file is not None:
     # Mostrar la imagen cargada
@@ -40,7 +38,9 @@ if uploaded_file is not None:
     st.image(image, caption='Imagen cargada', use_column_width=True)
 
     if model_choice == 'OpenCV':
+        # llamar a la funcion de predicción de OpenCV
         processed_image = preprocess_image(image, target_size=(32, 32))
+        model1 = load_model(p.Path_CV) #path
         prediction = model1.predict(processed_image)
         prediction = np.argmax(prediction, axis=1)
         if prediction == 0:
@@ -49,12 +49,15 @@ if uploaded_file is not None:
             st.write("The MRI image is classified as: Yes Tumor")
 
     if model_choice == 'Vertex':
+        # llamar a la funcion de predicción de Vertex AI y capturar la respuesta
+
+
         # Guardar la imagen en un archivo temporal para Vertex AI
         with open("temp_image.jpg", "wb") as file:
             file.write(uploaded_file.getbuffer())
 
         # Llamar a la función de predicción de Vertex AI y capturar la respuesta
-        prediction_response = predict_api.predict_image_classification_sample(
+        prediction_response = predict_image_classification_sample(
             project="263184688391",
             endpoint_id="2305326238748639232",
             location="us-central1",
@@ -66,6 +69,9 @@ if uploaded_file is not None:
                 if 'displayNames' in prediction and 'confidences' in prediction and 'ids' in prediction:
                     for displayName, id, confidence in zip(prediction['displayNames'], prediction['ids'], prediction['confidences']):
                         st.write(f"Resultado de Vertex AI: {displayName}, Confianza: {confidence:.2f}")
+
+    if model_choice == 'YoloV8':
+        modelo_yolo(image)
 
     # Convertir la imagen a base64 para la API de OpenAI
     buffered = io.BytesIO()

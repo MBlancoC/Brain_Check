@@ -1,10 +1,7 @@
 from openai import OpenAI
-
+import Backend.parametros as p
 def analyze_image_with_gpt4(image_data, question):
-    #pont)_tu_clave_aquí
-    client = OpenAI(api_key="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")
-
-    # No es necesario codificar la pregunta ya que OpenAI maneja internamente la codificación UTF-8
+    client = OpenAI(api_key=p.OPENAI_KEY)
     response = client.chat.completions.create(
         model="gpt-4-vision-preview",
         messages=[
@@ -12,7 +9,7 @@ def analyze_image_with_gpt4(image_data, question):
                 "role": "user",
                 "content": [
                     {"type": "text", "text": question},
-                    {"type": "image", "data": image_data}
+                    {"type": "image_url", "image_url": f"data:image/jpeg;base64,{image_data}"}
                 ]
             }
         ],
