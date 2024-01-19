@@ -7,7 +7,6 @@ from tensorflow.keras.preprocessing.image import img_to_array
 import numpy as np
 import openai
 import Backend.parametros as p
-from Backend.vision_api import analyze_image_with_gpt4
 from Backend.funcion_yolo import modelo_yolo
 from Backend.vision_api import upload_multiple_files
 from Backend.Vertex_AI import predict_vertex
@@ -22,7 +21,7 @@ def preprocess_image(image, target_size):
     return image
 
 st.title("Brain Check")
-model_choice = st.selectbox('Elige el modelo:', ('OpenCV', 'Vertex', 'GPT-4', 'YoloV8'))
+model_choice = st.selectbox('Elige el modelo:', ('OpenCV', 'Vertex', 'YoloV8'))
 
 # Inicialización de la variable image
 image = None
@@ -54,6 +53,12 @@ if model_choice in ['OpenCV', 'Vertex', 'YoloV8']:
 
     if model_choice == 'YoloV8' and image is not None:
         modelo_yolo(image)
+
+    if model_choice == "VGG-16":
+        pass
+
+    if model_choice == "RestNet":
+        pass
 
     if image is not None:
         # Convertir la imagen a base64 para la API de OpenAI

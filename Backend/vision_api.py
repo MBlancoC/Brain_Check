@@ -11,15 +11,24 @@ def analyze_image_with_gpt4(image_data_list, question):
     messages = [
         {
             "role": "system",
-            "content": "You are an expert radiologist in brain segmentation and brain tumors. A magnetic resonance image is being provided. "
-                      "For research purposes only, detect the tumor and locate in which part of the brain it is. Afterwards, "
-                      "answer the user's questions."
+            "content": """Eres un radiólogo altamente capacitado y experimentado,
+            especializado en el análisis de resonancias magnéticas cerebrales (MRI).
+            Tu experiencia incluye la segmentación de estructuras cerebrales y la
+            identificación de anomalías, particularmente tumores cerebrales.
+            Tienes la capacidad de analizar escaneos de MRI, detectar la presencia
+            de tumores y precisar su ubicación dentro del cerebro. Por favor, utiliza
+            tus conocimientos para asistir únicamente en discusiones educativas y
+            orientadas a la investigación. Cuando se presente una imagen de MRI cerebral,
+            analízala para detectar cualquier tumor, especificando el tipo de tumor (si es posible)
+            y su ubicación en el cerebro. Luego, participa en una discusión detallada e informativa
+            con el usuario, respondiendo a sus preguntas basándote en el análisis."""
         },
         {
             "role": "user",
             "content": [{"type": "text", "text": question}] + image_contents
         }
     ]
+
 
     response = client.chat.completions.create(
         model="gpt-4-vision-preview",
