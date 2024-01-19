@@ -86,7 +86,7 @@ if model_choice in ['OpenCV', 'Vertex', 'YoloV8']:
             except Exception as e:
                 st.error("Error al procesar la solicitud: " + str(e))
 
-# Subida de múltiples archivos para GPT-4
+
 if model_choice == 'GPT-4':
     uploaded_files = st.file_uploader("Chat with GPT-4 Vision", type=["jpg", "png"], accept_multiple_files=True)
     user_question = st.text_input("Escribe tu pregunta sobre la imagen para GPT-4:")
