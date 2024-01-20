@@ -20,8 +20,26 @@ def preprocess_image(image, target_size):
     image /= 255.0
     return image
 
-st.title("Brain Check")
-model_choice = st.selectbox('Elige el modelo:', ('OpenCV', 'Vertex', 'YoloV8'))
+logo_path = "static/Logo_BrainCheck.png"
+
+col1, col2, col3 = st.columns([1,2,1])
+
+with col2:
+
+    st.image(logo_path, width=200)
+with col2:
+
+    st.title("Brain Check")
+
+model_precisions = {
+    'OpenCV': '★★★★☆ - 95%',
+    'Vertex': '★★★★★ - 98.5%',
+    'YoloV8': '★★★★★ - 97.9%',
+}
+
+model_options = [f"{model} {precision}" for model, precision in model_precisions.items()]
+
+model_choice = st.selectbox('Elige el modelo:', model_options)
 
 uploaded_files = st.file_uploader("Carga tus imágenes aquí", type=["jpg", "png"], accept_multiple_files=True)
 
