@@ -72,6 +72,7 @@ if uploaded_files:
                 elif model_choice == "RestNet":
                     pass
                 predictions.append(result_text)
+                print(predictions)
             # Mostrar las predicciones debajo de cada imagen
 
     for i, prediction_text in enumerate(predictions):
