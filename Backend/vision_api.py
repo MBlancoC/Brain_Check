@@ -5,6 +5,7 @@ import io
 import base64
 
 def analyze_image_with_gpt4(image_data_list, question):
+
     client = OpenAI(api_key=p.OPENAI_KEY)
     image_contents = [{"type": "image_url", "image_url": f"data:image/jpeg;base64,{image_data}"} for image_data in image_data_list]
 
@@ -22,6 +23,10 @@ def analyze_image_with_gpt4(image_data_list, question):
             analízala para detectar cualquier tumor, especificando el tipo de tumor (si es posible)
             y su ubicación en el cerebro. Luego, participa en una discusión detallada e informativa
             con el usuario, respondiendo a sus preguntas basándote en el análisis."""
+
+            "ademas te comparto esta info extra: {}"
+            "la imagen X tiene tumor, la imagen X1 NO, ETC"
+            # agregar {message info imagenes con tumor}
         },
         {
             "role": "user",

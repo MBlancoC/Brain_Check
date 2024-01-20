@@ -26,37 +26,58 @@ model_choice = st.selectbox('Elige el modelo:', ('OpenCV', 'Vertex', 'YoloV8'))
 uploaded_files = st.file_uploader("Carga tus imágenes aquí", type=["jpg", "png"], accept_multiple_files=True)
 
 if uploaded_files:
-    for uploaded_file in uploaded_files:
+    # Establecer el número de columnas por fila en el grid
+    cols_per_row = 5
+    # Crear contenedores para las filas
+    rows = [st.container() for _ in range((len(uploaded_files) + cols_per_row - 1) // cols_per_row)]
+    # Crear las columnas dentro de cada contenedor de fila
+    cols_in_row = [row.columns(cols_per_row) for row in rows]
+
+    # Para almacenar las predicciones y asociarlas con sus imágenes
+    predictions = []
+
+    # Procesar cada archivo subido y realizar la predicción
+    for i, uploaded_file in enumerate(uploaded_files):
         if uploaded_file is not None:
             image = Image.open(uploaded_file)
-            st.image(image, caption='Imagen cargada', use_column_width=True)
+            col = cols_in_row[i // cols_per_row][i % cols_per_row]
 
-            if model_choice == 'OpenCV':
-                model = load_model(p.Path_CV)
-                processed_image = preprocess_image(image, target_size=(32, 32))
-                prediction = model.predict(processed_image)
-                prediction = np.argmax(prediction, axis=1)
-                if prediction == 0:
-                    st.write("La imagen no tiene tumor.")
-                else:
-                    st.write("La imagen tiene tumor.")
+            with col:
+                # Mostrar la imagen
+                st.image(image, use_column_width=True)
+                file_name = uploaded_file.name
 
-            elif model_choice == 'Vertex':
-                prediction_response = predict_vertex(uploaded_file)  # Asegúrate que esta función maneje un solo archivo
-                if prediction_response:
-                    for prediction in prediction_response:
-                        if 'displayNames' in prediction and 'confidences' in prediction and 'ids' in prediction:
-                            for displayName, id, confidence in zip(prediction['displayNames'], prediction['ids'], prediction['confidences']):
-                                st.write(f"Resultado de Vertex AI: {displayName}, Confianza: {confidence:.2f}")
+                # Procesamiento específico de cada modelo
+                if model_choice == 'OpenCV':
+                    model = load_model(p.Path_CV)
+                    processed_image = preprocess_image(image, target_size=(32, 32))
+                    prediction = model.predict(processed_image)
+                    prediction = np.argmax(prediction, axis=1)
+                    result_text = f"{file_name}: La imagen no tiene tumor." if prediction == 0 else f"{file_name}: La imagen tiene tumor."
 
-            elif model_choice == 'YoloV8':
-                modelo_yolo(image)
+                elif model_choice == 'Vertex':
+                    prediction_response = predict_vertex(uploaded_file)  # Asegúrate de que esta función acepte un archivo y devuelva una predicción
+                    # Asume que predict_vertex devuelve un diccionario con la predicción y la confianza
+                    if prediction_response['prediction'] == 'No Tumor':
+                        result_text = f"Vertex AI - {file_name}: La imagen no tiene tumor. Confianza: {prediction_response['confidence']:.2f}"
+                    else:
+                        result_text = f"Vertex AI- {file_name}: La imagen tiene tumor. Confianza: {prediction_response['confidence']:.2f}"
 
-            elif model_choice == "VGG-16":
-                pass
+                elif model_choice == 'YoloV8':
+                    result_text = modelo_yolo(image)  # Asume que modelo_yolo devuelve un string con el resultado
 
-            elif model_choice == "RestNet":
-                pass
+                elif model_choice == "VGG-16":
+                    pass
+
+                elif model_choice == "RestNet":
+                    pass
+                predictions.append(result_text)
+            # Mostrar las predicciones debajo de cada imagen
+
+    for i, prediction_text in enumerate(predictions):
+        col = cols_in_row[i // cols_per_row][i % cols_per_row]
+        with col:
+            st.caption(prediction_text)
 
 if uploaded_files:
     user_question = st.text_input("Escribe tu pregunta sobre la imagen para GPT-4:")
