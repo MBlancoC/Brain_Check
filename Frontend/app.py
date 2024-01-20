@@ -23,80 +23,45 @@ def preprocess_image(image, target_size):
 st.title("Brain Check")
 model_choice = st.selectbox('Elige el modelo:', ('OpenCV', 'Vertex', 'YoloV8'))
 
-# Inicialización de la variable image
-image = None
+uploaded_files = st.file_uploader("Carga tus imágenes aquí", type=["jpg", "png"], accept_multiple_files=True)
 
-if model_choice in ['OpenCV', 'Vertex', 'YoloV8']:
-    uploaded_file = st.file_uploader("Carga tu imagen aquí", type=["jpg", "png"])
+if uploaded_files:
+    for uploaded_file in uploaded_files:
+        if uploaded_file is not None:
+            image = Image.open(uploaded_file)
+            st.image(image, caption='Imagen cargada', use_column_width=True)
 
-    if uploaded_file is not None:
-        image = Image.open(uploaded_file)
-        st.image(image, caption='Imagen cargada', use_column_width=True)
+            if model_choice == 'OpenCV':
+                model = load_model(p.Path_CV)
+                processed_image = preprocess_image(image, target_size=(32, 32))
+                prediction = model.predict(processed_image)
+                prediction = np.argmax(prediction, axis=1)
+                if prediction == 0:
+                    st.write("La imagen no tiene tumor.")
+                else:
+                    st.write("La imagen tiene tumor.")
 
-    if model_choice == 'OpenCV' and image is not None:
-        model1 = load_model(p.Path_CV)
-        processed_image = preprocess_image(image, target_size=(32, 32))
-        prediction = model1.predict(processed_image)
-        prediction = np.argmax(prediction, axis=1)
-        if prediction == 0:
-            st.write("The MRI image is classified as: No Tumor")
-        else:
-            st.write("The MRI image is classified as: Yes Tumor")
+            elif model_choice == 'Vertex':
+                prediction_response = predict_vertex(uploaded_file)  # Asegúrate que esta función maneje un solo archivo
+                if prediction_response:
+                    for prediction in prediction_response:
+                        if 'displayNames' in prediction and 'confidences' in prediction and 'ids' in prediction:
+                            for displayName, id, confidence in zip(prediction['displayNames'], prediction['ids'], prediction['confidences']):
+                                st.write(f"Resultado de Vertex AI: {displayName}, Confianza: {confidence:.2f}")
 
-    if model_choice == 'Vertex' and image is not None:
-        prediction_response = predict_vertex(uploaded_file)
-        if prediction_response:
-            for prediction in prediction_response:
-                if 'displayNames' in prediction and 'confidences' in prediction and 'ids' in prediction:
-                    for displayName, id, confidence in zip(prediction['displayNames'], prediction['ids'], prediction['confidences']):
-                        st.write(f"Resultado de Vertex AI: {displayName}, Confianza: {confidence:.2f}")
+            elif model_choice == 'YoloV8':
+                modelo_yolo(image)
 
-    if model_choice == 'YoloV8' and image is not None:
-        modelo_yolo(image)
+            elif model_choice == "VGG-16":
+                pass
 
-    if model_choice == "VGG-16":
-        pass
+            elif model_choice == "RestNet":
+                pass
 
-    if model_choice == "RestNet":
-        pass
-
-    if image is not None:
-        # Convertir la imagen a base64 para la API de OpenAI
-        buffered = io.BytesIO()
-        image.save(buffered, format="JPEG")
-        image_data = base64.b64encode(buffered.getvalue()).decode('utf-8')
-
-        # Caja de texto para obtener la pregunta del usuario para GPT-4
-        user_question = st.text_input("Escribe tu pregunta sobre la imagen para GPT-4:")
-
-        # Botón de envío
-        if st.button('Enviar pregunta'):
-            try:
-                # Realizar la petición a OpenAI
-                response = openai.chat.completions.create(
-                    model="gpt-4-vision-preview",
-                    messages=[
-                        {
-                            "role": "user",
-                            "content": [
-                                {"type": "text", "text": user_question},
-                                {"type": "image_url", "image_url": f"data:image/jpeg;base64,{image_data}"}
-                            ],
-                        }
-                    ],
-                    max_tokens=300,
-                )
-                st.write("Respuesta de GPT-4 Vision:")
-                st.write(response.choices[0].message.content)
-            except Exception as e:
-                st.error("Error al procesar la solicitud: " + str(e))
-
-
-if model_choice == 'GPT-4':
-    uploaded_files = st.file_uploader("Chat with GPT-4 Vision", type=["jpg", "png"], accept_multiple_files=True)
+if uploaded_files:
     user_question = st.text_input("Escribe tu pregunta sobre la imagen para GPT-4:")
 
-    if uploaded_files and user_question and st.button('Enviar pregunta a GPT-4'):
+    if user_question and st.button('Enviar pregunta'):
         try:
             response = upload_multiple_files(uploaded_files, user_question)
             if response:
