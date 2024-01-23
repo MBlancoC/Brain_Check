@@ -4,15 +4,18 @@ from PIL import Image
 import io
 import base64
 
-def analyze_image_with_gpt4(image_data_list, question, resultados_gpt):
+import openai
+#from openai import OpenAI
+from PIL import Image
+import io
+import base64
 
-    client = OpenAI(api_key=p.OPENAI_KEY)
+def analyze_image_with_gpt4(image_data_list, question):
     image_contents = [{"type": "image_url", "image_url": f"data:image/jpeg;base64,{image_data}"} for image_data in image_data_list]
-
     messages = [
         {
             "role": "system",
-            "content": f"""Eres un radiólogo altamente capacitado y experimentado,
+            "content": """Eres un radiólogo altamente capacitado y experimentado,
             especializado en el análisis de resonancias magnéticas cerebrales (MRI).
             Tu experiencia incluye la segmentación de estructuras cerebrales y la
             identificación de anomalías, particularmente tumores cerebrales.
@@ -22,11 +25,7 @@ def analyze_image_with_gpt4(image_data_list, question, resultados_gpt):
             orientadas a la investigación. Cuando se presente una imagen de MRI cerebral,
             analízala para detectar cualquier tumor, especificando el tipo de tumor (si es posible)
             y su ubicación en el cerebro. Luego, participa en una discusión detallada e informativa
-            con el usuario, respondiendo a sus preguntas basándote en el análisis {resultados_gpt}
-
-            ademas te comparto esta info extra:"
-            la imagen X tiene tumor, la imagen X1 NO, ETC"""
-            # agregar {message info imagenes con tumor}
+            con el usuario, respondiendo a sus preguntas basándote en el análisis."""
         },
         {
             "role": "user",
@@ -35,17 +34,15 @@ def analyze_image_with_gpt4(image_data_list, question, resultados_gpt):
     ]
 
 
-    response = client.chat.completions.create(
-        model="gpt-4-vision-preview",
-        messages=messages,
-        max_tokens=500,
-    )
-    return response
+    #response = client.chat.completions.create(
+       #model="gpt-4-vision-preview",
+        #messages=messages,
+       # max_tokens=500,
+    #)
+    #return response.choices[0].message.content
+    return messages
 
-
-# Subida de múltiples archivos para GPT-4
-
-def upload_multiple_files(uploaded_files, question):
+def upload_multiple_files(uploaded_files):
     image_data_list = []
     for uploaded_file in uploaded_files:
         if uploaded_file is not None:
@@ -55,7 +52,21 @@ def upload_multiple_files(uploaded_files, question):
             image_data = base64.b64encode(buffered.getvalue()).decode('utf-8')
             image_data_list.append(image_data)
 
-    if image_data_list and question:
-        return analyze_image_with_gpt4(image_data_list, question)
-    else:
-        return None
+    return image_data_list
+
+    #if image_data_list and question:
+        #return get_chatgpt_response(analyze_image_with_gpt4(image_data_list, question))
+    #else:
+        #return None
+
+def get_chatgpt_response(messages):
+    response = openai.chat.completions.create(
+        model="gpt-4-vision-preview",
+        messages=messages,
+        max_tokens=300,
+    )
+    return response.choices[0].message.content
+
+def update_chat(messages, role, content):
+    messages.append({"role": role, "content": content})
+    return messages

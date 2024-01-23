@@ -7,9 +7,8 @@ def predict_vertex(uploaded_file):
 
     # Llamar a la función de predicción de Vertex AI y capturar la respuesta
     prediction_response = predict_image_classification_sample(
-        project="263184688391",
-        endpoint_id="2305326238748639232",
-        location="us-central1",
-        filename="temp_image.jpg"
-    )
+    project="309967433708",
+    endpoint_id="8459565498294599680",
+    location="us-central1",
+    filename="temp_image.jpg")
     return prediction_response
