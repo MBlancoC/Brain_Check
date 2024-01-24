@@ -14,4 +14,4 @@ def modelo_yolo(image):
                else f"<p style='color:red;'>La imagen SÍ tiene un tumor.</p>")
     # Escribir el mensaje en la salida de streamlit
     st.markdown(mensaje, unsafe_allow_html=True)
-    return("La imagen no tiene un tumor." if tumor_present else "La imagen SÍ tiene un tumor.")
+    return("La imagen SÍ tiene un tumor." if tumor_present else "La imagen no tiene un tumor.")
