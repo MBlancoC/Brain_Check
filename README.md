@@ -46,10 +46,10 @@ Una vez seleccionado el modelo, debes cargar las imagenes para que el modelo las
 ![Captura de pantalla](Frontend/static/Upload_files.png)
 
 En la interfaz se muestra la imagen y el resultado de la clasificación.
-![Captura de pantalla](Frontend/static/resultado.png)
+![Captura de pantalla](Frontend/static/Resultado.png)
 
 Finalmente puedes crear una conversacion con Chat GPT con el modelo de visión para obtener información respecto al tumor de la imagen.
-![Captura de pantalla](Frontend/static/chat.png)
+![Captura de pantalla](Frontend/static/Chat.png)
 
 ## Contribuyentes
 Este proyecto ha sido desarrollado por:
