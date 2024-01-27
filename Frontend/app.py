@@ -29,16 +29,15 @@ with col2:
 # Definición de las precisiones de los modelos con estrellas
 model_precisions = {
     'OpenCV': '★★★★☆ - 95%',
-    'Vertex': '★★★★★ - 98.5%',
+    'Vertex AI': '★★★★★ - 98.5%',
     'YoloV8': '★★★★★ - 97.9%',
     'VGG-16': '★★★☆☆ - 75%',  # Ejemplo, ajusta según sea necesario
     'RestNet': '★★★★☆ - 90%'  # Ejemplo, ajusta según sea necesario
 }
 
 # Creación de las opciones para el selectbox incluyendo las estrellas
-model_options = ('OpenCV - ★★★★☆ - 95%', 'Vertex - ★★★★★ - 98.5%', 'YoloV8 - ★★★★★ - 97.9%')
+model_options = ('Vertex AI - ★★★★★ - 98.5%', 'YoloV8 - ★★★★★ - 97.9%', 'OpenCV - ★★★★☆ - 95%')
 model_choice = st.selectbox('Elige el modelo:', model_options)
-
 uploaded_files = st.file_uploader("Carga tus imágenes aquí", type=["jpg", "png"], accept_multiple_files=True)
 if uploaded_files:
     # Establecer el número de columnas por fila en el grid
@@ -48,8 +47,8 @@ if uploaded_files:
     # Crear las columnas dentro de cada contenedor de fila
     cols_in_row = [row.columns(cols_per_row) for row in rows]
     # Para almacenar las predicciones y asociarlas con sus imágenes
-    predictions = {}
     # Procesar cada archivo subido y realizar la predicción
+    predictions = {}
     for i, uploaded_file in enumerate(uploaded_files):
         if uploaded_file is not None:
             image = Image.open(uploaded_file)
@@ -62,7 +61,7 @@ if uploaded_files:
                 if model_choice == 'OpenCV - ★★★★☆ - 95%':
                     result_text = modelo_opencv(image)
                     predictions[file_name]=result_text
-                elif model_choice == 'Vertex - ★★★★★ - 98.5%':
+                elif model_choice == 'Vertex AI - ★★★★★ - 98.5%':
                     # Guardar la imagen en un archivo temporal para Vertex AI
                     with open("temp_image.jpg", "wb") as file:
                         file.write(uploaded_file.getbuffer())
@@ -111,7 +110,6 @@ if 'generated' not in st.session_state:
 if 'past' not in st.session_state:
     st.session_state['past'] = []
 
-st.write(f"dict predictions: {predictions}")
 if uploaded_files:
     user_question = st.text_input("Escribe tu pregunta sobre la imagen para GPT-4:")
     if user_question and st.button('Enviar pregunta'):
