@@ -1,9 +1,9 @@
 from predict_api import predict_image_classification_sample
 
 # Define los parámetros
-project_id = "263184688391"
-endpoint_id = "2305326238748639232"
-location = "us-central1"
+project_id="309967433708"
+endpoint_id="8459565498294599680"
+location="us-central1"
 filename = "path_to_your_image_file.jpg"  # Asegúrate de proporcionar la ruta correcta
 
 # Llamar a la función

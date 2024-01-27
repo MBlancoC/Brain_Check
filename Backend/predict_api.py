@@ -1,4 +1,3 @@
-# https://github.com/googleapis/python-aiplatform/blob/main/samples/snippets/prediction_service/predict_image_classification_sample.py
 # Copyright 2020 Google LLC
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -59,5 +58,8 @@ def predict_image_classification_sample(
     for prediction in predictions:
         print(" prediction:", dict(prediction))
 
-    return response.predictions
+    return predictions
+
+
+
 # [END aiplatform_predict_image_classification_sample]

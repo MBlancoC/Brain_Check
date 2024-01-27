@@ -1,8 +1,18 @@
+
 .ipynb_checkpoints
 .env
-/__pycache__
-__pycache__
-
 .DS_Store
+
+# folders/
+/__pycache__
+__pycache__/
 env/
 venv/
+p1/
+
+# Images
+.jpg
+.png
+.JPEG
+
+.zip
