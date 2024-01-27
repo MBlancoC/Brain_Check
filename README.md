@@ -26,6 +26,30 @@ Utilizamos Streamlit para crear una interfaz web interactiva que permite a los u
 Actualmente utilizando app_marsi.py
 ## Cómo Usar
 [Aquí incluir instrucciones detalladas sobre cómo instalar, configurar y usar el proyecto, incluyendo cualquier paso necesario para configurar el entorno, como instalar dependencias, etc.]
+## Selección del Modelo
+
+Antes de utilizar el proyecto, es necesario seleccionar el modelo que se utilizará para la clasificación de imágenes cerebrales. Puedes elegir entre los siguientes modelos:
+
+- Vertex AI
+- YOLOv8
+- OpenCV
+
+Para seleccionar un modelo, sigue los siguientes pasos:
+
+1. Abre la aplicación web desarrollada con Streamlit.
+2. En la interfaz de usuario, busca la opción de "Selección del Modelo".
+3. Haz clic en el modelo que deseas utilizar.
+
+![Captura de pantalla](Frontend/static/select_model.png)
+
+Una vez seleccionado el modelo, debes cargar las imagenes para que el modelo las clasifique
+![Captura de pantalla](Frontend/static/Upload_files.png)
+
+En la interfaz se muestra la imagen y el resultado de la clasificación.
+![Captura de pantalla](Frontend/static/resultado.png)
+
+Finalmente puedes crear una conversacion con Chat GPT con el modelo de visión para obtener información respecto al tumor de la imagen.
+![Captura de pantalla](Frontend/static/chat.png)
 
 ## Contribuyentes
 Este proyecto ha sido desarrollado por:

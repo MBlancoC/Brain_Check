@@ -37,8 +37,8 @@ model_precisions = {
 
 # Creación de las opciones para el selectbox incluyendo las estrellas
 model_options = ('Vertex AI - ★★★★★ - 98.5%', 'YoloV8 - ★★★★★ - 97.9%', 'OpenCV - ★★★★☆ - 95%')
-model_choice = st.selectbox('Elige el modelo:', model_options)
-uploaded_files = st.file_uploader("Carga tus imágenes aquí", type=["jpg", "png"], accept_multiple_files=True)
+model_choice = st.selectbox('Select the model:', model_options)
+uploaded_files = st.file_uploader("Upload your files", type=["jpg", "png"], accept_multiple_files=True)
 if uploaded_files:
     # Establecer el número de columnas por fila en el grid
     cols_per_row = 5
@@ -81,9 +81,9 @@ if uploaded_files:
                             for displayName, confidence in zip(displayNames, confidences):
                                 color = "green" if displayName == "no" else "red"
                                 if displayName == "no":
-                                    result_texts.append(f"<p style='color:green;'> La imagen no tiene tumor.</p>")
+                                    result_texts.append(f"<p style='color:green;'> The image does not have a tumor.</p>")
                                 else:
-                                    result_texts.append(f"<p style='color:red;'> La imagen SÍ tiene tumor.</p>")
+                                    result_texts.append(f"<p style='color:red;'> The image HAS a tumor.</p>")
 
                         result_text = f"{file_name}: " + "; ".join(result_texts)
                         predictions[file_name]=result_text
@@ -111,8 +111,8 @@ if 'past' not in st.session_state:
     st.session_state['past'] = []
 
 if uploaded_files:
-    user_question = st.text_input("Escribe tu pregunta sobre la imagen para GPT-4:")
-    if user_question and st.button('Enviar pregunta'):
+    user_question = st.text_input("Chat with GPT-4 Vision Model:")
+    if user_question and st.button('Send Question'):
         try:
             image_data_list = upload_multiple_files(uploaded_files)
             if 'messages' not in st.session_state:
