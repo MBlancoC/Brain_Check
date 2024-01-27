@@ -1,5 +1,5 @@
 # Brain Check
-
+![Captura de pantalla](Frontend/static/Logo2.png)
 ## Descripción
 Brain Check es un proyecto de clasificación de imágenes cerebrales, enfocado en la detección de tumores cerebrales. Utilizamos tecnologías de inteligencia artificial y data science, incluyendo modelos como VGG-16, YOLOv8, OpenCV, RestNet, y AutoML de Vertex AI. Integramos la API de Chat GPT 4 Vision para proporcionar análisis detallados basados en la ubicación del tumor.
 
